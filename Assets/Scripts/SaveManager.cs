@@ -37,3 +37,11 @@ public static class SaveManager
         }
     }
 }
+
+//Save File Data Structure
+public class SaveObject
+{
+    public int correctLetters;
+    public int incorrectLetters;
+    public int hints;
+}

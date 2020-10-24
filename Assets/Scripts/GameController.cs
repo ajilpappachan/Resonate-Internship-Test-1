@@ -13,6 +13,13 @@ public class GameController : MonoBehaviour
     private List<GameObject> AnswerSlots;
     private int currentSlot;
     private List<int> emptySlots;
+    private int totalStars;
+
+    //Save Elements
+    private SaveController saveController;
+    private int correctLetters;
+    private int incorrectLetters;
+    private int hints;
 
     //UI Elements
     public GameObject LetterboxesUI;
@@ -20,14 +27,8 @@ public class GameController : MonoBehaviour
     public GameObject MainUI;
     public GameObject PauseUI;
     public GameObject SubmitButton;
-
-
-    class SaveObject
-    {
-        public int correctLetters;
-        public int incorrectLetters;
-        public int hints;
-    }
+    public GameObject CorrectScreen;
+    public GameObject WrongScreen;
 
     //Initialise Everything
     private void Awake()
@@ -35,9 +36,16 @@ public class GameController : MonoBehaviour
         LetterBoxes = new List<GameObject>();
         AnswerSlots = new List<GameObject>();
         currentSlot = 0;
+        totalStars = 0;
         emptySlots = new List<int>();
-        SaveManager.Initialise();
         levelObject = GetComponent<LevelObjectManager>().getRandomObject();
+
+        SaveManager.Initialise();
+        saveController = GetComponent<SaveController>();
+        incorrectLetters = 0;
+        correctLetters = 0;
+        hints = 0;
+
         startLevel(levelObject);
     }
 
@@ -73,23 +81,66 @@ public class GameController : MonoBehaviour
     //Submit Answer
     public void Submit()
     {
-
+        MainUI.SetActive(false);
+        string formedWord = "";
+        foreach(GameObject slot in AnswerSlots)
+        {
+            formedWord += slot.GetComponent<AnswerSlot>().getletter();
+        }
+        if(formedWord == levelObject.objectName)
+        {
+            showCorrectScreen();
+        }
+        else
+        {
+            showWrongScreen();
+        }
     }
 
-    //Save the Current State
-    private void SaveRecord(string message, int number)
+    //Show Correct and Wrong Screens
+    private void showCorrectScreen()
     {
-        SaveObject saveObject = new SaveObject();
-        string saveData = JsonUtility.ToJson(saveObject);
-        SaveManager.Save(saveData);
+        CorrectScreen.SetActive(true);
+        foreach(GameObject slot in AnswerSlots)
+        {
+            slot.GetComponent<AnswerSlot>().giveStar();
+        }
     }
 
-    //Load Saved State
-    private SaveObject LoadRecord()
+    private void showWrongScreen()
     {
-        string loadedData = SaveManager.Load();
-        SaveObject loadedSaveObject = JsonUtility.FromJson<SaveObject>(loadedData);
-        return loadedSaveObject;
+        WrongScreen.SetActive(true);
+        GameObject.FindGameObjectWithTag("CorrectWordUI").GetComponent<Text>().text = levelObject.objectName;
+    }
+
+    //Load Next Level
+    public void Next()
+    {
+        LetterBoxes.Clear();
+        AnswerSlots.Clear();
+        currentSlot = 0;
+        emptySlots.Clear();
+        MainUI.SetActive(true);
+        foreach (GameObject slot in GameObject.FindGameObjectsWithTag("AnswerSlot"))
+        {
+            Destroy(slot);
+        }
+        foreach(GameObject letter in GameObject.FindGameObjectsWithTag("LetterBox"))
+        {
+            letter.GetComponent<LetterBox>().Reload();
+            letter.SetActive(false);
+        }
+        foreach(GameObject star in GameObject.FindGameObjectsWithTag("Star"))
+        {
+            totalStars++;
+            GameObject.FindGameObjectWithTag("TotalStars").GetComponent<Text>().text = totalStars.ToString();
+            Destroy(star);
+        }
+        levelObject = GetComponent<LevelObjectManager>().getRandomObject();
+        CorrectScreen.SetActive(false);
+        WrongScreen.SetActive(false);
+        SubmitButton.SetActive(false);
+        startLevel(levelObject);
     }
 
     //Level Logic
@@ -98,25 +149,23 @@ public class GameController : MonoBehaviour
         levelImage.sprite = levelObject.objectImage;
         foreach (char letter in levelObject.objectName)
         {
-            GameObject child = LetterboxesUI.transform.GetChild(Random.Range(0, 21)).gameObject;
-            do
+            GameObject child;
+            while(true)
             {
+                child = LetterboxesUI.transform.GetChild(Random.Range(0, 21)).gameObject;
                 if (!child.activeInHierarchy)
                 {
                     child.GetComponent<LetterBox>().Initialise(letter, this);
                     child.SetActive(true);
-                }
-                else
-                {
-                    child = LetterboxesUI.transform.GetChild(Random.Range(0, 21)).gameObject;
+                    break;
                 }
             }
-            while (!child.activeInHierarchy);
             child.GetComponentInChildren<Text>().text = letter.ToString();
             LetterBoxes.Add(child);
             GameObject slot = Instantiate(answerSlot, AnswerSlotsUI.transform);
-            slot.GetComponent<AnswerSlot>().Initialise(currentSlot++, slot.transform.position);
+            slot.GetComponent<AnswerSlot>().Initialise(currentSlot, slot.transform.position, child, this);
             AnswerSlots.Add(slot);
+            emptySlots.Add(currentSlot++);
         }
         currentSlot = 0;
     }
@@ -124,30 +173,27 @@ public class GameController : MonoBehaviour
     //Get the current answer slot
     public GameObject getCurrentAnswerSlot()
     {
-        if(emptySlots.Count == 0)
-        {
-            return AnswerSlots[currentSlot++];
-        }
-        else
-        {
-            emptySlots.Sort();
-            GameObject emptySlot = AnswerSlots[emptySlots[0]];
-            emptySlots.RemoveAt(0);
-            Debug.Log(emptySlots);
-            return emptySlot;
-        }
+        emptySlots.Sort();
+        GameObject emptySlot = AnswerSlots[emptySlots[0]];
+        emptySlots.RemoveAt(0);
+        return emptySlot;
     }
 
-    //Add any empty slots
+    //Add or remove any empty slots
     public void addEmptySlot(int index)
     {
         emptySlots.Add(index);
     }
 
+    public void removeSlot(int index)
+    {
+        emptySlots.Remove(index);
+    }
+
     //Check if all slots are full
     public void checkFullSlots()
     {
-        if(currentSlot == AnswerSlots.Count && emptySlots.Count == 0)
+        if(emptySlots.Count == 0)
         {
             SubmitButton.SetActive(true);
         }
@@ -155,6 +201,22 @@ public class GameController : MonoBehaviour
         {
             SubmitButton.SetActive(false);
         }
+    }
+
+    //Save States
+    public void saveCorrectLetter()
+    {
+        saveController.SaveRecord(++correctLetters, incorrectLetters, hints);
+    }
+
+    public void saveIncorrectLetter()
+    {
+        saveController.SaveRecord(correctLetters, ++incorrectLetters, hints);
+    }
+
+    public void saveHint()
+    {
+        saveController.SaveRecord(correctLetters, incorrectLetters, ++hints);
     }
 
     // Start is called before the first frame update
