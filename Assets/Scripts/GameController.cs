@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameController : MonoBehaviour
 {
@@ -75,7 +76,7 @@ public class GameController : MonoBehaviour
     //Quit to Main Menu
     public void Quit()
     {
-
+        SceneManager.LoadScene("Quit");
     }
 
     //Submit Answer
