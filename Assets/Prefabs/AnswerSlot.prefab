@@ -223,3 +223,4 @@ MonoBehaviour:
   slotNumber: 0
   position: {x: 0, y: 0}
   star: {fileID: 1929317027580677920, guid: 45167939294f4434ba1e58a9aa2feed2, type: 3}
+  starSlot: {fileID: 2981944219987231705, guid: d795bd24fb1350c48aef41075a8793bc, type: 3}

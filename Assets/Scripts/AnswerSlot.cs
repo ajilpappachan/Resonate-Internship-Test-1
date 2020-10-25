@@ -14,6 +14,7 @@ public class AnswerSlot : MonoBehaviour
 
     private GameObject starsUI;
     public GameObject star;
+    public GameObject starSlot;
 
     public void Initialise(int slotNumber, Vector2 position, GameObject letterBox, GameController gameController)
     {
@@ -46,7 +47,9 @@ public class AnswerSlot : MonoBehaviour
         if(!usedHint)
         {
             starsUI = GameObject.FindGameObjectWithTag("StarsUI");
-            Instantiate(star, starsUI.transform);
+            GameObject spawnedStar = Instantiate(star, gameObject.transform.position, Quaternion.identity, GameObject.FindGameObjectWithTag("UICanvas").transform);
+            GameObject starSlot = Instantiate(this.starSlot, starsUI.transform);
+            LeanTween.move(spawnedStar, starSlot.transform, 1.0f).setEase(LeanTweenType.easeSpring);
         }
         FindObjectOfType<AudioManager>().playStar();
     }

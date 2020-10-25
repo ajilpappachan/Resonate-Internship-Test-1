@@ -2022,9 +2022,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   answerSlot: {fileID: 3816885992792652731, guid: a968e113e92ab40499a56d3d0d3b0d4b, type: 3}
   levelImage: {fileID: 521491351}
-  buttonSfx: {fileID: 8300000, guid: f474f42daa7ddb8428bbd569341f5491, type: 3}
-  correctSfx: {fileID: 8300000, guid: 690fcae1fbbf0e84f83b301630b44648, type: 3}
-  wrongSfx: {fileID: 8300000, guid: b2fb8c185fae8b34c9e704ad72708c97, type: 3}
   correctLetters: 0
   incorrectLetters: 0
   hints: 0
@@ -4845,7 +4842,7 @@ GameObject:
   - component: {fileID: 1773204530}
   m_Layer: 5
   m_Name: Board Canvas
-  m_TagString: Untagged
+  m_TagString: UICanvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

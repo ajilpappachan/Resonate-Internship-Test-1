@@ -151,6 +151,10 @@ public class GameController : MonoBehaviour
             GameObject.FindGameObjectWithTag("TotalStars").GetComponent<Text>().text = totalStars.ToString();
             Destroy(star);
         }
+        foreach(GameObject starSlot in GameObject.FindGameObjectsWithTag("StarSlot"))
+        {
+            Destroy(starSlot);
+        }
         levelObject = GetComponent<LevelObjectManager>().getRandomObject();
         CorrectScreen.SetActive(false);
         WrongScreen.SetActive(false);

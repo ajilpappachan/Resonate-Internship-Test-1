@@ -11,6 +11,8 @@ TagManager:
   - Star
   - TotalStars
   - AudioManager
+  - UICanvas
+  - StarSlot
   layers:
   - Default
   - TransparentFX
