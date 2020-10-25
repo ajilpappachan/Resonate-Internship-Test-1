@@ -111,6 +111,7 @@ public class GameController : MonoBehaviour
     //Show Correct and Wrong Screens
     private void showCorrectScreen()
     {
+        saveController.updateCompletedLevels(levelObject.name);
         audioManager.playCorrect();
         CorrectScreen.SetActive(true);
         foreach(GameObject slot in AnswerSlots)
@@ -155,11 +156,27 @@ public class GameController : MonoBehaviour
         {
             Destroy(starSlot);
         }
-        levelObject = GetComponent<LevelObjectManager>().getRandomObject();
-        CorrectScreen.SetActive(false);
-        WrongScreen.SetActive(false);
-        SubmitButton.SetActive(false);
-        startLevel(levelObject);
+        saveController.updatePreviousLevel(levelObject.name);
+        if(saveController.getCompletedLevelsLength() == GetComponent<LevelObjectManager>().getLevelObjectsLength())
+        {
+            SceneManager.LoadScene("Quit");
+        }
+        else
+        {
+            while (true)
+            {
+                levelObject = GetComponent<LevelObjectManager>().getRandomObject();
+                SaveObject loadedData = saveController.LoadRecord();
+                if (!(loadedData.lastLevel == levelObject.name) && !(loadedData.completedLevels.Contains(levelObject.name)))
+                {
+                    break;
+                }
+            }
+            CorrectScreen.SetActive(false);
+            WrongScreen.SetActive(false);
+            SubmitButton.SetActive(false);
+            startLevel(levelObject);
+        }
     }
 
     //Level Logic
@@ -196,6 +213,12 @@ public class GameController : MonoBehaviour
         GameObject emptySlot = AnswerSlots[emptySlots[0]];
         emptySlots.RemoveAt(0);
         return emptySlot;
+    }
+
+    //Get Hint for the current slot
+    public void getHint()
+    {
+        getCurrentAnswerSlot().GetComponent<AnswerSlot>().useHint();
     }
 
     //Add or remove any empty slots

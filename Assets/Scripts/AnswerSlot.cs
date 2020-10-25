@@ -56,7 +56,7 @@ public class AnswerSlot : MonoBehaviour
 
     IEnumerator Hint()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(30.0f);
         hint.SetActive(true);
         StopCoroutine("Hint");
     }

@@ -45,4 +45,16 @@ public class SaveObject
     public int incorrectLetters;
     public int hints;
     public int totalStars;
+    public string lastLevel;
+    public List<string> completedLevels;
+
+    public SaveObject()
+    {
+        correctLetters = 0;
+        incorrectLetters = 0;
+        hints = 0;
+        totalStars = 0;
+        lastLevel = "";
+        completedLevels = new List<string>();
+    }
 }

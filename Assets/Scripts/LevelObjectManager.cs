@@ -19,4 +19,9 @@ public class LevelObjectManager : MonoBehaviour
     {
         return (levelObjects[Random.Range(0, levelObjects.Length)]);
     }
+
+    public int getLevelObjectsLength()
+    {
+        return levelObjects.Length;
+    }
 }
