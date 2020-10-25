@@ -15,11 +15,13 @@ public class LevelObjectManager : MonoBehaviour
         }
     }
 
+    //Get a random level
     public LevelObject getRandomObject()
     {
         return (levelObjects[Random.Range(0, levelObjects.Length)]);
     }
 
+    //Get the total number of levels available
     public int getLevelObjectsLength()
     {
         return levelObjects.Length;

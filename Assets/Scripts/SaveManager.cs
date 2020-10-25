@@ -6,7 +6,7 @@ using System.IO;
 public static class SaveManager
 {
     //Database Directory
-    public static readonly string SAVE_FOLDER = Application.dataPath + "/Saves/";
+    public static readonly string SAVE_FOLDER = Application.persistentDataPath + "/Saves/";
 
     //Initialise Directory
     public static void Initialise()

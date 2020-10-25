@@ -7,35 +7,39 @@ public class SaveController : MonoBehaviour
     SaveObject saveObject = new SaveObject();
 
     //Save the Current State
+    private void Save()
+    {
+        string saveData = JsonUtility.ToJson(saveObject);
+        SaveManager.Save(saveData);
+    }
     public void SaveRecord(int correctLetters, int incorrectLetters, int hints, int totalStars)
     {
         saveObject.correctLetters = correctLetters;
         saveObject.incorrectLetters = incorrectLetters;
         saveObject.hints = hints;
         saveObject.totalStars = totalStars;
-        string saveData = JsonUtility.ToJson(saveObject);
-        SaveManager.Save(saveData);
+        Save();
     }
 
     public void updatePreviousLevel(string previousLevel)
     {
         saveObject.lastLevel = previousLevel;
-        string saveData = JsonUtility.ToJson(saveObject);
-        SaveManager.Save(saveData);
+        Save();
     }
 
     public void updateCompletedLevels(string finishedLevel)
     {
         saveObject.completedLevels.Add(finishedLevel);
-        string saveData = JsonUtility.ToJson(saveObject);
-        SaveManager.Save(saveData);
+        Save();
     }
 
+    //Get the number of levels completed
     public int getCompletedLevelsLength()
     {
         return saveObject.completedLevels.Count;
     }
 
+    //Clear LevelData for New Game
     public void ClearLevelData()
     {
         saveObject.lastLevel = "";

@@ -33,10 +33,12 @@ public class GameController : MonoBehaviour
     public GameObject SubmitButton;
     public GameObject CorrectScreen;
     public GameObject WrongScreen;
+    public Button hintButton;
 
     //Initialise Everything
     private void Awake()
     {
+        //Initialise Variables
         LetterBoxes = new List<GameObject>();
         AnswerSlots = new List<GameObject>();
         currentSlot = 0;
@@ -44,14 +46,18 @@ public class GameController : MonoBehaviour
         emptySlots = new List<int>();
         levelObject = GetComponent<LevelObjectManager>().getRandomObject();
 
+        //Initialise Save Controller
         SaveManager.Initialise();
         saveController = GetComponent<SaveController>();
+        saveController.ClearLevelData();
         incorrectLetters = 0;
         correctLetters = 0;
         hints = 0;
 
+        //Initialise Audio
         audioManager = FindObjectOfType<AudioManager>();
 
+        //Start first level
         startLevel(levelObject);
     }
 
@@ -130,12 +136,15 @@ public class GameController : MonoBehaviour
     //Load Next Level
     public void Next()
     {
+        //Reset Level Stats
         audioManager.playButton();
         LetterBoxes.Clear();
         AnswerSlots.Clear();
         currentSlot = 0;
         emptySlots.Clear();
         MainUI.SetActive(true);
+
+        //Destroy Unnecessary GameObjects
         foreach (GameObject slot in GameObject.FindGameObjectsWithTag("AnswerSlot"))
         {
             Destroy(slot);
@@ -156,6 +165,8 @@ public class GameController : MonoBehaviour
         {
             Destroy(starSlot);
         }
+
+        //Save the game Status and Load next level
         saveController.updatePreviousLevel(levelObject.name);
         if(saveController.getCompletedLevelsLength() == GetComponent<LevelObjectManager>().getLevelObjectsLength())
         {
@@ -182,7 +193,10 @@ public class GameController : MonoBehaviour
     //Level Logic
     public void startLevel(LevelObject levelObject)
     {
+        //Load Image
         levelImage.sprite = levelObject.objectImage;
+
+        //Create LetterBoxes
         foreach (char letter in levelObject.objectName)
         {
             GameObject child;
@@ -198,6 +212,8 @@ public class GameController : MonoBehaviour
             }
             child.GetComponentInChildren<Text>().text = letter.ToString();
             LetterBoxes.Add(child);
+
+            //Create Answer Slots
             GameObject slot = Instantiate(answerSlot, AnswerSlotsUI.transform);
             slot.GetComponent<AnswerSlot>().Initialise(currentSlot, slot.transform.position, child, this);
             AnswerSlots.Add(slot);
@@ -213,6 +229,12 @@ public class GameController : MonoBehaviour
         GameObject emptySlot = AnswerSlots[emptySlots[0]];
         emptySlots.RemoveAt(0);
         return emptySlot;
+    }
+
+    //Enable/Disable Hint Button
+    public void setHintActive(bool value)
+    {
+        hintButton.interactable = value;
     }
 
     //Get Hint for the current slot
@@ -259,17 +281,5 @@ public class GameController : MonoBehaviour
     public void saveHint()
     {
         saveController.SaveRecord(correctLetters, incorrectLetters, ++hints, totalStars);
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

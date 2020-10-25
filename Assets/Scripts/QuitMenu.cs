@@ -13,6 +13,7 @@ public class QuitMenu : MonoBehaviour
     private SaveController saveController;
     public AudioClip quitSfx;
 
+    //Show the data from the save file
     private void Awake()
     {
         saveController = GetComponent<SaveController>();
@@ -24,6 +25,7 @@ public class QuitMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().playQuit();
     }
 
+    //Go back to main menu
     public void Quit()
     {
         FindObjectOfType<AudioManager>().playButton();
