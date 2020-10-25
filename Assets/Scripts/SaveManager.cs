@@ -44,4 +44,5 @@ public class SaveObject
     public int correctLetters;
     public int incorrectLetters;
     public int hints;
+    public int totalStars;
 }

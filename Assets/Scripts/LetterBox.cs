@@ -27,6 +27,7 @@ public class LetterBox : MonoBehaviour
 
     public void goToAnswerSlot()
     {
+        FindObjectOfType<AudioManager>().playButton();
         if(isAnswer)
         {
             Reload();

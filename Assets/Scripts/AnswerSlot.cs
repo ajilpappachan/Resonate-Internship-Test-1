@@ -48,6 +48,7 @@ public class AnswerSlot : MonoBehaviour
             starsUI = GameObject.FindGameObjectWithTag("StarsUI");
             Instantiate(star, starsUI.transform);
         }
+        FindObjectOfType<AudioManager>().playStar();
     }
 
     IEnumerator Hint()

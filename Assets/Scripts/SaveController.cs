@@ -5,12 +5,13 @@ using UnityEngine;
 public class SaveController : MonoBehaviour
 {
     //Save the Current State
-    public void SaveRecord(int correctLetters, int incorrectLetters, int hints)
+    public void SaveRecord(int correctLetters, int incorrectLetters, int hints, int totalStars)
     {
         SaveObject saveObject = new SaveObject();
         saveObject.correctLetters = correctLetters;
         saveObject.incorrectLetters = incorrectLetters;
         saveObject.hints = hints;
+        saveObject.totalStars = totalStars;
         string saveData = JsonUtility.ToJson(saveObject);
         SaveManager.Save(saveData);
     }

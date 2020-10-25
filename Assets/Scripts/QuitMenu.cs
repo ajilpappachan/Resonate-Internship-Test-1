@@ -9,7 +9,9 @@ public class QuitMenu : MonoBehaviour
     public Text correctLetters;
     public Text incorrectLetters;
     public Text hints;
+    public Text totalStars;
     private SaveController saveController;
+    public AudioClip quitSfx;
 
     private void Awake()
     {
@@ -17,11 +19,14 @@ public class QuitMenu : MonoBehaviour
         SaveObject loadedData = saveController.LoadRecord();
         correctLetters.text = loadedData.correctLetters.ToString();
         incorrectLetters.text = loadedData.incorrectLetters.ToString();
+        totalStars.text = loadedData.totalStars.ToString();
         hints.text = loadedData.hints.ToString();
+        FindObjectOfType<AudioManager>().playQuit();
     }
 
     public void Quit()
     {
+        FindObjectOfType<AudioManager>().playButton();
         SceneManager.LoadScene("MainMenu");
     }
 }

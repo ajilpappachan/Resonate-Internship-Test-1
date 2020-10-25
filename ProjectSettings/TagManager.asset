@@ -10,6 +10,7 @@ TagManager:
   - LetterBox
   - Star
   - TotalStars
+  - AudioManager
   layers:
   - Default
   - TransparentFX
