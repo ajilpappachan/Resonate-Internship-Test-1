@@ -36,7 +36,7 @@ public class LetterBox : MonoBehaviour
             //Go back to game board
             Reload();
             gameController.addEmptySlot(currentSlot.GetComponent<AnswerSlot>().slotNumber);
-            currentSlot.GetComponent<AnswerSlot>().showHint();
+            gameController.checkHintStatus();
         }
         else
         {
@@ -44,7 +44,7 @@ public class LetterBox : MonoBehaviour
             currentSlot = gameController.getCurrentAnswerSlot();
             gameObject.transform.position = currentSlot.transform.position;
             currentSlot.GetComponent<AnswerSlot>().setLetter(letter);
-            currentSlot.GetComponent<AnswerSlot>().hideHint();
+            gameController.checkHintStatus();
             isAnswer = true;
 
             //Update Save Record

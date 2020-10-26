@@ -44,6 +44,7 @@ public class GameController : MonoBehaviour
         currentSlot = 0;
         totalStars = 0;
         emptySlots = new List<int>();
+        GetComponent<LevelObjectManager>().Initialise();
         levelObject = GetComponent<LevelObjectManager>().getRandomObject();
 
         //Initialise Save Controller
@@ -220,6 +221,7 @@ public class GameController : MonoBehaviour
             emptySlots.Add(currentSlot++);
         }
         currentSlot = 0;
+        checkHintStatus();
     }
 
     //Get the current answer slot
@@ -237,10 +239,26 @@ public class GameController : MonoBehaviour
         hintButton.interactable = value;
     }
 
+    //Check the current hint Status
+    public void checkHintStatus()
+    {
+        StopCoroutine("Hint");
+        setHintActive(false);
+        StartCoroutine("Hint");
+    }
+
     //Get Hint for the current slot
     public void getHint()
     {
         getCurrentAnswerSlot().GetComponent<AnswerSlot>().useHint();
+        checkHintStatus();
+    }
+
+    IEnumerator Hint()
+    {
+        yield return new WaitForSeconds(30.0f);
+        setHintActive(true);
+        StopCoroutine("Hint");
     }
 
     //Add or remove any empty slots

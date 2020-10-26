@@ -6,12 +6,12 @@ public class LevelObjectManager : MonoBehaviour
 {
     public LevelObject[] levelObjects;
     // Start is called before the first frame update
-    void Start()
+    public void Initialise()
     {
         //Change the Name to Uppercase Characters
         foreach(LevelObject levelObject in levelObjects)
         {
-            levelObject.objectName.ToUpper();
+            levelObject.objectName = levelObject.objectName.ToUpper();
         }
     }
 

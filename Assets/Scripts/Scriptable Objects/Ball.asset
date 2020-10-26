@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Ball
   m_EditorClassIdentifier: 
   objectImage: {fileID: 21300000, guid: 9aba04535e99fc543ac9aa0f8a7e7cf7, type: 3}
-  objectName: BALL
+  objectName: Ball

@@ -8,7 +8,6 @@ public class AnswerSlot : MonoBehaviour
     public Vector2 position;
     private char letter;
     private GameObject letterBox;
-    private GameObject hint;
     private bool usedHint;
     private GameController gameController;
 
@@ -23,9 +22,7 @@ public class AnswerSlot : MonoBehaviour
         this.position = position;
         this.letterBox = letterBox;
         this.gameController = gameController;
-        hint = gameObject.transform.GetChild(0).gameObject;
         usedHint = false;
-        showHint();
     }
 
     //Get the target Letter of this Answer Slot
@@ -59,30 +56,8 @@ public class AnswerSlot : MonoBehaviour
         FindObjectOfType<AudioManager>().playStar();
     }
 
-    //Show and Hide Hints
-    IEnumerator Hint()
-    {
-        yield return new WaitForSeconds(30.0f);
-        hint.SetActive(true);
-        gameController.setHintActive(true);
-        StopCoroutine("Hint");
-    }
-
-    public void showHint()
-    {
-        StartCoroutine("Hint");
-    }
-
-    public void hideHint()
-    {
-        StopCoroutine("Hint");
-        hint.SetActive(false);
-    }
-
     public void useHint()
     {
-        hint.SetActive(false);
-        gameController.setHintActive(false);
         gameController.removeSlot(slotNumber);
         usedHint = true;
         letterBox.GetComponent<LetterBox>().useHint(gameObject);
